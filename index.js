@@ -1,8 +1,8 @@
 const readline = require("readline-sync");
-const csv = require("csv-parser");
-const fs = require("fs");
+
 const Account = require("./account.js");
 const Transaction = require("./transaction.js");
+const CsvHandler = require("./csv_handler.js");
 var moment = require("moment");
 
 
@@ -16,18 +16,30 @@ log4js.configure({
         default: {appenders: ["file"], level: "ALL"}
     }
 });
-var logger = log4js.getLogger();
+const logger = log4js.getLogger();
 
 const CSV_FILE = "dodgy_trans.csv";//"./transactions.csv"; //
 
 function main() {
-    readTrans(function (rawTrans) {
-        let transactions = createTransaction(rawTrans);
+    console.log("Please input file path:");
+    const FILEPATH = readline.prompt();
 
-        let accounts = createAccounts(rawTrans, transactions); // ac name : ac object
+    if (FILEPATH.endsWith(".csv")) {
+        let handler = new CsvHandler(FILEPATH, processData);
 
-        takeCommand(accounts);
-    });
+    } else if (FILEPATH.endsWith(".json")) {
+
+
+    }
+
+}
+
+function processData(rawTrans) {
+    let transactions = createTransaction(rawTrans);
+
+    let accounts = createAccounts(rawTrans, transactions); // ac name : ac object
+
+    takeListCommand(accounts);
 }
 
 function createTransaction(rawTrans) {
@@ -71,7 +83,7 @@ function createAccounts(rawTrans, transactions) {
     return accounts;
 }
 
-function takeCommand(accounts) {
+function takeListCommand(accounts) {
     let command = readline.prompt().toString();
     if (command === "List All") {
         for (let name in accounts) {
@@ -83,19 +95,6 @@ function takeCommand(accounts) {
             console.log(`From: ${t.from}, To: ${t.to}, Date: ${t.date}, Narrative: ${t.narrative}`);
         }
     }
-}
-
-function readTrans(callback) {
-    let rawTransactions = [];
-    fs.createReadStream(CSV_FILE)
-        .pipe(csv()) //??
-        .on("data", (data) => {
-            // console.log(data);
-            rawTransactions.push(data);
-        })
-        .on("end", () => {
-            callback(rawTransactions)
-        });
 }
 
 main();
