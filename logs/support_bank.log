@@ -1,0 +1,5 @@
+[2019-06-25T16:54:48.887] [ERROR] default - NaN error caused by entry: {"Date":"01/03/2015","From":"Ben B","To":"Sam N","Narrative":"Lunch","Amount":"One Cheeseburger"}
+[2019-06-25T16:57:21.338] [ERROR] default - NaN error caused by entry: {"Date":"01/03/2015","From":"Ben B","To":"Sam N","Narrative":"Lunch","Amount":"One Cheeseburger"}
+[2019-06-25T16:57:21.341] [ERROR] default - Date error caused by entry: {"Date":"Last Thursday","From":"Sarah T","To":"Dan W","Narrative":"Beers","Amount":"5.42"}
+[2019-06-25T16:57:57.594] [ERROR] default - NaN error caused by entry: {"Date":"01/03/2015","From":"Ben B","To":"Sam N","Narrative":"Lunch","Amount":"One Cheeseburger"}
+[2019-06-25T16:57:57.597] [ERROR] default - Date error caused by entry: {"Date":"Last Thursday","From":"Sarah T","To":"Dan W","Narrative":"Beers","Amount":"5.42"}
