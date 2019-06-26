@@ -1,10 +1,6 @@
 const readline = require("readline-sync");
-const TransactionHandler = require("./transaction_handler");
-const Account = require("./account.js");
-const CsvHandler = require("./csv_handler.js");
-const JsonHandler = require("./json_handler.js");
-const XmlHandler = require("./xml_handler");
-
+const Exporter = require("./exporter/exporter");
+const Parser = require("./parser/parser");
 
 const log4js = require("log4js");
 log4js.configure({
@@ -22,34 +18,25 @@ function main() {
     console.log("Please input file path:");
     const filepath = readline.prompt().trim();
 
-    if (filepath.endsWith(".csv")) {
-        let csvHandler = new CsvHandler(filepath, takeCommand, logger);
-
-    } else if (filepath.endsWith(".json")) {
-        let jsonHandler = new JsonHandler(filepath, logger);
-        takeCommand(jsonHandler.transactions, jsonHandler.accounts);
-    } else if (filepath.endsWith(".xml")) {
-        let xmlHandler = new XmlHandler(filepath, logger);
-        takeCommand(xmlHandler.transactions, xmlHandler.accounts);
-    }
+    new Parser(filepath, logger, takeCommand)
 }
 
 function takeCommand(transactions, accounts) {
 
     let command = readline.prompt().trim().toString();
 
-    if (command === "List All") {
+    if (command === "list all") {
         for (let name in accounts) {
             console.log(`Name: ${name}    Balance: ${accounts[name].balance}`);
         }
-    } else if (command.startsWith("List ")) {
+    } else if (command.startsWith("list ")) {
         let ac_name = command.slice(5);
         for (let t of accounts[ac_name].trans) {
             console.log(`From: ${t.from}, To: ${t.to}, Date: ${t.date}, Narrative: ${t.narrative}`);
         }
-    } else if (command.startsWith("Export File ")) {
+    } else if (command.startsWith("export file ")) {
         let destination = command.slice(12);
-        TransactionHandler.exportTransactions(destination, transactions)
+        Exporter.exportTransactions(destination, transactions)
     }
 }
 

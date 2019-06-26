@@ -1,54 +1,16 @@
-const Account = require("./account.js");
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const fs = require("fs");
 const xml = require("xml2js");
-const Transaction = require("./transaction.js");
+const Transaction = require("../transaction.js");
 
-
-class TransactionHandler {
-
-    constructor() {
-        this._transactions = [];
-        this._accounts = [];
-    }
-
-    get transactions() {
-        return this._transactions;
-    }
-
-    get accounts() {
-        return this._accounts;
-    }
-
-    createAccount() {
-        this._accounts = {};
-
-        for (let t of this._transactions) {
-            // create dictionary keys for new accounts
-            if (!this._accounts.hasOwnProperty(t.from)) {
-                this._accounts[t.from] = new Account(t.from);
-            }
-            if (!this._accounts.hasOwnProperty(t.to)) {
-                this._accounts[t.to] = new Account(t.to);
-            }
-
-            // transfer the balance
-            this._accounts[t.from].trans.push(t);
-            this._accounts[t.to].trans.push(t);
-            // logger.debug(t.amount);
-            this._accounts[t.from].updateBalance(-t.amount);
-            this._accounts[t.to].updateBalance(t.amount);
-        }
-    }
-
-
+class Exporter {
     static exportTransactions(filepath, transactions) {
         if (filepath.endsWith(".csv")) {
-            TransactionHandler.csvExport(filepath, transactions);
+            Exporter.csvExport(filepath, transactions);
         } else if (filepath.endsWith(".json")) {
-            TransactionHandler.jsonExport(filepath, transactions);
+            Exporter.jsonExport(filepath, transactions);
         } else if (filepath.endsWith(".xml")) {
-            TransactionHandler.xmlExport(filepath, transactions);
+            Exporter.xmlExport(filepath, transactions);
         }
     }
 
@@ -96,4 +58,4 @@ class TransactionHandler {
     }
 }
 
-module.exports = TransactionHandler;
+module.exports = Exporter;

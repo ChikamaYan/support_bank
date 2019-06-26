@@ -1,10 +1,11 @@
 const csv = require("csv-parser");
 const fs = require("fs");
-const Transaction = require("./transaction.js");
+const Transaction = require("../transaction.js");
 var moment = require("moment");
-const TransactionHandler = require("./transaction_handler");
+const TransactionParser = require("./transaction_parser");
 
-class CsvHandler extends TransactionHandler {
+
+class CsvParser extends TransactionParser {
     constructor(filepath, callback, logger) {
         super();
         this.logger = logger;
@@ -29,10 +30,10 @@ class CsvHandler extends TransactionHandler {
     createTransactions() {
         this._transactions = [];
         for (let row of this.rawTrans) {
-            this._transactions.push(new Transaction(CsvHandler.parseDate(row["Date"]),
+            this._transactions.push(new Transaction(CsvParser.parseDate(row["Date"]),
                 row["From"], row["To"], row["Narrative"], parseFloat(row["Amount"])));
 
-            if (!CsvHandler.parseDate(row["Date"]).isValid()) {
+            if (!CsvParser.parseDate(row["Date"]).isValid()) {
                 this.logger.error("Date error caused by entry: " + JSON.stringify(row));
             }
 
@@ -43,4 +44,4 @@ class CsvHandler extends TransactionHandler {
     }
 }
 
-module.exports = CsvHandler;
+module.exports = CsvParser;

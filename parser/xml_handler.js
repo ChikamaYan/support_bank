@@ -1,6 +1,6 @@
-const TransactionHandler = require("./transaction_handler");
+const TransactionHandler = require("./transaction_parser");
 const fs = require("fs");
-const Transaction = require("./transaction.js");
+const Transaction = require("../transaction.js");
 var moment = require("moment");
 var parseString = require("xml2js").parseString;
 

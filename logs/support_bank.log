@@ -11,3 +11,8 @@
 [2019-06-26T14:53:00.382] [DEBUG] default - Processing file ./transactions.csv with CSV handler
 [2019-06-26T14:53:40.726] [DEBUG] default - Processing file ./transactions.csv with CSV handler
 [2019-06-26T14:54:34.454] [DEBUG] default - Processing file ./transactions.csv with CSV handler
+[2019-06-26T16:00:49.154] [DEBUG] default - Processing file ./transactions.csv with CSV handler
+[2019-06-26T16:01:02.498] [DEBUG] default - Processing file ./data/transactions.csv with CSV handler
+[2019-06-26T16:01:14.020] [DEBUG] default - Processing file ./data/trans.csv with CSV handler
+[2019-06-26T16:01:24.579] [DEBUG] default - Processing file ./data/trans.xml with XML handler
+[2019-06-26T16:01:41.162] [DEBUG] default - Processing file ./data/trans.json with JSON handler
