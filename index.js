@@ -22,7 +22,6 @@ function main() {
 }
 
 function commandLoop(transactions, accounts, stop = false) {
-
     if (!stop) {
         let command = readline.prompt().trim().toString();
 
@@ -40,6 +39,8 @@ function commandLoop(transactions, accounts, stop = false) {
         } else if (command.startsWith("export file ")) {
             let destination = command.slice(12);
             Exporter.exportTransactions(destination, transactions, accounts, commandLoop)
+        } else if (command === "quit") {
+            console.log("Bye!");
         }
     }
 }

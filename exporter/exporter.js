@@ -28,11 +28,21 @@ class Exporter {
 
         let promise;
         for (let t of transactions) {
-            let record = [{date: t.date, from: t.from, to: t.to, narrative: t.narrative, amount: t.amount}];
+            let record = [{
+                date: t.date.format("DD-MM-YYYY"),
+                from: t.from,
+                to: t.to,
+                narrative: t.narrative,
+                amount: t.amount
+            }];
             promise = Promise.resolve(promise)
                 .then(() => csvWriter.writeRecords(record))
         }
-        callback(transactions, accounts, false);
+
+        Promise.resolve(promise).then(() => {
+            console.log(`Exported into ${filepath}!`);
+            callback(transactions, accounts, false);
+        });
     }
 
     static jsonExport(filepath, transactions, accounts, callback) {

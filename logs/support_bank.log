@@ -25,3 +25,6 @@
 [2019-06-26T16:15:13.755] [DEBUG] default - Processing file ./data/trans.json with JSON handler
 [2019-06-26T16:15:44.899] [DEBUG] default - Processing file ./data/trans.json with JSON handler
 [2019-06-26T16:50:50.157] [DEBUG] default - Processing file ./data/trans.json with JSON handler
+[2019-06-26T17:03:57.875] [DEBUG] default - Processing file ./data/trans.csv with CSV handler
+[2019-06-26T17:04:47.130] [DEBUG] default - Processing file ./data/trans.csv with CSV handler
+[2019-06-26T17:06:24.691] [DEBUG] default - Processing file ./data/trans.csv with CSV handler
