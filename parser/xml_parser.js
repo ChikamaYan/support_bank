@@ -1,4 +1,4 @@
-const TransactionHandler = require("./transaction_parser");
+const TransactionParser = require("./transaction_parser");
 const fs = require("fs");
 const Transaction = require("../transaction.js");
 var moment = require("moment");
@@ -6,7 +6,7 @@ var parseString = require("xml2js").parseString;
 
 var temp;
 
-class XmlHandler extends TransactionHandler {
+class XmlParser extends TransactionParser {
     constructor(filepath, logger) {
         super();
         this.logger = logger;
@@ -25,7 +25,7 @@ class XmlHandler extends TransactionHandler {
         this._transactions = [];
         for (let row of rawTrans["TransactionList"]["SupportTransaction"]) {
 
-            let date = XmlHandler.parseDate(row["$"]["Date"]);
+            let date = XmlParser.parseDate(row["$"]["Date"]);
             let amount = parseFloat(row["Value"][0]);
 
             this._transactions.push(new Transaction(date,
@@ -49,4 +49,4 @@ class XmlHandler extends TransactionHandler {
 
 }
 
-module.exports = XmlHandler;
+module.exports = XmlParser;
