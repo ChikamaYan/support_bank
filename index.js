@@ -18,25 +18,29 @@ function main() {
     console.log("Please input file path:");
     const filepath = readline.prompt().trim();
 
-    new Parser(filepath, logger, takeCommand)
+    new Parser(filepath, logger, commandLoop)
 }
 
-function takeCommand(transactions, accounts) {
+function commandLoop(transactions, accounts, stop = false) {
 
-    let command = readline.prompt().trim().toString();
+    if (!stop) {
+        let command = readline.prompt().trim().toString();
 
-    if (command === "list all") {
-        for (let name in accounts) {
-            console.log(`Name: ${name}    Balance: ${accounts[name].balance}`);
+        if (command === "list all") {
+            for (let name in accounts) {
+                console.log(`Name: ${name}    Balance: ${accounts[name].balance}`);
+            }
+            commandLoop(transactions, accounts);
+        } else if (command.startsWith("list ")) {
+            let ac_name = command.slice(5);
+            for (let t of accounts[ac_name].trans) {
+                console.log(`From: ${t.from}, To: ${t.to}, Date: ${t.date}, Narrative: ${t.narrative}`);
+            }
+            commandLoop(transactions, accounts);
+        } else if (command.startsWith("export file ")) {
+            let destination = command.slice(12);
+            Exporter.exportTransactions(destination, transactions, accounts, commandLoop)
         }
-    } else if (command.startsWith("list ")) {
-        let ac_name = command.slice(5);
-        for (let t of accounts[ac_name].trans) {
-            console.log(`From: ${t.from}, To: ${t.to}, Date: ${t.date}, Narrative: ${t.narrative}`);
-        }
-    } else if (command.startsWith("export file ")) {
-        let destination = command.slice(12);
-        Exporter.exportTransactions(destination, transactions)
     }
 }
 

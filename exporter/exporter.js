@@ -4,17 +4,17 @@ const xml = require("xml2js");
 const Transaction = require("../transaction.js");
 
 class Exporter {
-    static exportTransactions(filepath, transactions) {
+    static exportTransactions(filepath, transactions, accounts, callback) {
         if (filepath.endsWith(".csv")) {
-            Exporter.csvExport(filepath, transactions);
+            Exporter.csvExport(filepath, transactions, accounts, callback);
         } else if (filepath.endsWith(".json")) {
-            Exporter.jsonExport(filepath, transactions);
+            Exporter.jsonExport(filepath, transactions, accounts, callback);
         } else if (filepath.endsWith(".xml")) {
-            Exporter.xmlExport(filepath, transactions);
+            Exporter.xmlExport(filepath, transactions, accounts, callback);
         }
     }
 
-    static csvExport(filepath, transactions) {
+    static csvExport(filepath, transactions, accounts, callback) {
         const csvWriter = createCsvWriter({
             path: filepath,
             header: [
@@ -32,14 +32,22 @@ class Exporter {
             promise = Promise.resolve(promise)
                 .then(() => csvWriter.writeRecords(record))
         }
+        callback(transactions, accounts, false);
     }
 
-    static jsonExport(filepath, transactions) {
+    static jsonExport(filepath, transactions, accounts, callback) {
         let json = JSON.stringify(transactions);
-        fs.writeFileSync(filepath, json);
+        fs.writeFile(filepath, json, function (err, data) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(`Exported into ${filepath}!`);
+                callback(transactions, accounts, false);
+            }
+        });
     }
 
-    static xmlExport(filepath, transactions) {
+    static xmlExport(filepath, transactions, accounts, callback) {
         let builder = new xml.Builder();
         let newTrans = [];
 
@@ -52,7 +60,8 @@ class Exporter {
             if (err) {
                 console.log(err);
             } else {
-                console.log('updated!');
+                console.log(`Exported into ${filepath}!`);
+                callback(transactions, accounts, false);
             }
         })
     }
