@@ -1,9 +1,9 @@
 const readline = require("readline-sync");
 
 const Account = require("./account.js");
-const Transaction = require("./transaction.js");
 const CsvHandler = require("./csv_handler.js");
-var moment = require("moment");
+const JsonHandler = require("./json_handler.js");
+const XmlHandler = require("./xml_handler");
 
 
 const log4js = require("log4js");
@@ -18,72 +18,22 @@ log4js.configure({
 });
 const logger = log4js.getLogger();
 
-const CSV_FILE = "dodgy_trans.csv";//"./transactions.csv"; //
-
 function main() {
     console.log("Please input file path:");
-    const FILEPATH = readline.prompt();
+    const filepath = readline.prompt().trim();
 
-    if (FILEPATH.endsWith(".csv")) {
-        let handler = new CsvHandler(FILEPATH, processData);
+    if (filepath.endsWith(".csv")) {
+        let csvHandler = new CsvHandler(filepath, takeQueryCommand, logger);
 
-    } else if (FILEPATH.endsWith(".json")) {
-
-
+    } else if (filepath.endsWith(".json")) {
+        let jsonHandler = new JsonHandler(filepath, logger);
+        takeQueryCommand(jsonHandler.getAccounts());
+    } else if (filepath.endsWith(".xml")) {
+        let xmlHandler = new XmlHandler(filepath, logger);
+        takeQueryCommand(xmlHandler.getAccounts());
     }
-
 }
-
-function processData(rawTrans) {
-    let transactions = createTransaction(rawTrans);
-
-    let accounts = createAccounts(rawTrans, transactions); // ac name : ac object
-
-    takeListCommand(accounts);
-}
-
-function createTransaction(rawTrans) {
-    let transactions = [];
-    for (let row of rawTrans) {
-        // logger.debug(row["Date"]+ "   " + moment(row["Date"]).toISOString());
-        transactions.push(new Transaction(moment(row["Date"], "DD-MM-YYYY"),
-            row["From"], row["To"], row["Narrative"], parseFloat(row["Amount"])));
-
-        if (!moment(row["Date"], "DD-MM-YYYY").isValid()) {
-            logger.error("Date error caused by entry: " + JSON.stringify(row));
-        }
-
-        if (isNaN(parseFloat(row["Amount"]))) {
-            logger.error("NaN error caused by entry: " + JSON.stringify(row));
-        }
-    }
-    return transactions;
-}
-
-function createAccounts(rawTrans, transactions) {
-    let accounts = {};
-
-    for (let t of transactions) {
-        // create dictionary keys for new accounts
-        if (!accounts.hasOwnProperty(t.from)) {
-            accounts[t.from] = new Account(t.from);
-        }
-        if (!accounts.hasOwnProperty(t.to)) {
-            accounts[t.to] = new Account(t.to);
-        }
-
-        // transfer the balance
-        accounts[t.from].trans.push(t);
-        accounts[t.to].trans.push(t);
-        // logger.debug(t.amount);
-        accounts[t.from].updateBalance(-t.amount);
-        accounts[t.to].updateBalance(t.amount);
-    }
-
-    return accounts;
-}
-
-function takeListCommand(accounts) {
+function takeQueryCommand(accounts) {
     let command = readline.prompt().toString();
     if (command === "List All") {
         for (let name in accounts) {
