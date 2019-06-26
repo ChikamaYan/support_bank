@@ -16,21 +16,19 @@ class XmlHandler extends TransactionHandler {
             temp = result;
         });
 
-        this.rawTrans = temp;
+        this.createTransactions(temp);
+        this.createAccount();
+
     }
 
-    static parseDate(string) {
-        return moment("01-01-1900", "DD-MM-YYYY").add(parseInt(string), "days");
-    }
-
-    getTransactions() {
-        let transactions = [];
-        for (let row of this.rawTrans["TransactionList"]["SupportTransaction"]) {
+    createTransactions(rawTrans) {
+        this._transactions = [];
+        for (let row of rawTrans["TransactionList"]["SupportTransaction"]) {
 
             let date = XmlHandler.parseDate(row["$"]["Date"]);
             let amount = parseFloat(row["Value"][0]);
 
-            transactions.push(new Transaction(date,
+            this._transactions.push(new Transaction(date,
                 row["Parties"][0]["From"][0], row["Parties"][0]["To"][0], row["Description"][0], amount));
 
 
@@ -41,8 +39,12 @@ class XmlHandler extends TransactionHandler {
             if (isNaN(amount)) {
                 this.logger.error("NaN error caused by entry: " + JSON.stringify(row));
             }
+
         }
-        return transactions;
+    }
+
+    static parseDate(string) {
+        return moment("01-01-1900", "DD-MM-YYYY").add(parseInt(string), "days");
     }
 
 }

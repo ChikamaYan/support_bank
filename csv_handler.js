@@ -16,7 +16,9 @@ class CsvHandler extends TransactionHandler {
                 this.rawTrans.push(data);
             })
             .on("end", () => {
-                callback(this.getAccounts());
+                this.createTransactions();
+                this.createAccount();
+                callback(this._transactions, this.accounts);
             });
     }
 
@@ -24,10 +26,10 @@ class CsvHandler extends TransactionHandler {
         return moment(string, "DD-MM-YYYY");
     }
 
-    getTransactions() {
-        let transactions = [];
+    createTransactions() {
+        this._transactions = [];
         for (let row of this.rawTrans) {
-            transactions.push(new Transaction(CsvHandler.parseDate(row["Date"]),
+            this._transactions.push(new Transaction(CsvHandler.parseDate(row["Date"]),
                 row["From"], row["To"], row["Narrative"], parseFloat(row["Amount"])));
 
             if (!CsvHandler.parseDate(row["Date"]).isValid()) {
@@ -38,7 +40,6 @@ class CsvHandler extends TransactionHandler {
                 this.logger.error("NaN error caused by entry: " + JSON.stringify(row));
             }
         }
-        return transactions;
     }
 }
 
